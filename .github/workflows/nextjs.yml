@@ -75,6 +75,14 @@ jobs:
         run: ${{ steps.detect-package-manager.outputs.manager }} ${{ steps.detect-package-manager.outputs.command }}
       - name: Build with Next.js
         run: ${{ steps.detect-package-manager.outputs.runner }} next build
+        env:
+          NEXT_PUBLIC_USE_MOCK_AUTH: "true"
+          NEXT_PUBLIC_USE_MOCK_DATA: "true"
+          NEXT_PUBLIC_VIAX_REALM: palooza
+          NEXT_PUBLIC_VIAX_ENV: demo
+          NEXT_PUBLIC_VIAX_CLIENT_ID: portal-client
+          NEXT_PUBLIC_VIAX_AUTH_URL: https://auth.palooza.demo.viax.io
+          NEXT_PUBLIC_VIAX_API_URL: https://api.palooza.demo.viax.io/graphql
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
