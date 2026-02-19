@@ -8,6 +8,12 @@ import { CardSkeleton } from '@/components/shared/loading-skeleton';
 import { formatDate } from '@/lib/utils/format';
 import { Wrench, Package } from 'lucide-react';
 
+function formatLocation(loc) {
+  if (!loc) return '—';
+  if (typeof loc === 'string') return loc;
+  return [loc.facility, loc.department, loc.room ? `Room ${loc.room}` : null].filter(Boolean).join(' — ');
+}
+
 export default function AssetDetailPage({ assetId }) {
   const [asset, setAsset] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -21,6 +27,12 @@ export default function AssetDetailPage({ assetId }) {
 
   if (loading) return <div className="space-y-6"><CardSkeleton /><CardSkeleton /></div>;
   if (!asset) return <div className="py-12 text-center text-[#545857]">Asset not found.</div>;
+
+  const timelineEvents = (asset.transactionHistory || asset.history || []).map((e) => ({
+    date: e.date,
+    title: e.type + (e.reference ? ` (${e.reference})` : ''),
+    description: e.notes,
+  }));
 
   return (
     <div className="space-y-6">
@@ -40,15 +52,41 @@ export default function AssetDetailPage({ assetId }) {
           <div className="space-y-3">
             <div className="flex justify-between"><span className="text-sm text-[#545857]">Serial Number</span><span className="text-sm font-semibold text-black">{asset.serialNumber}</span></div>
             <div className="flex justify-between"><span className="text-sm text-[#545857]">Model</span><span className="text-sm font-semibold text-black">{asset.model || asset.productName}</span></div>
-            <div className="flex justify-between"><span className="text-sm text-[#545857]">Location</span><span className="text-sm font-semibold text-black">{asset.location}</span></div>
+            <div className="flex justify-between"><span className="text-sm text-[#545857]">Location</span><span className="text-sm font-semibold text-black">{formatLocation(asset.location)}</span></div>
+            <div className="flex justify-between"><span className="text-sm text-[#545857]">Condition</span><span className="text-sm font-semibold text-black">{asset.condition}</span></div>
             <div className="flex justify-between"><span className="text-sm text-[#545857]">Install Date</span><span className="text-sm font-semibold text-black">{formatDate(asset.installDate)}</span></div>
-            <div className="flex justify-between"><span className="text-sm text-[#545857]">Warranty</span><span className="text-sm font-semibold text-black">{asset.warrantyStatus}</span></div>
-            {asset.warrantyExpiry && <div className="flex justify-between"><span className="text-sm text-[#545857]">Warranty Expiry</span><span className="text-sm font-semibold text-black">{formatDate(asset.warrantyExpiry)}</span></div>}
-            {asset.batchNumber && <div className="flex justify-between"><span className="text-sm text-[#545857]">Batch/Lot</span><span className="text-sm font-semibold text-black">{asset.batchNumber}</span></div>}
+            <div className="flex justify-between"><span className="text-sm text-[#545857]">Warranty</span><span className="text-sm font-semibold text-black">{asset.warranty?.status || asset.warrantyStatus || '—'}</span></div>
+            {(asset.warranty?.endDate || asset.warrantyExpiry) && <div className="flex justify-between"><span className="text-sm text-[#545857]">Warranty Expiry</span><span className="text-sm font-semibold text-black">{formatDate(asset.warranty?.endDate || asset.warrantyExpiry)}</span></div>}
+            {asset.warranty?.type && <div className="flex justify-between"><span className="text-sm text-[#545857]">Warranty Type</span><span className="text-sm font-semibold text-black">{asset.warranty.type}</span></div>}
+            {asset.softwareVersion && <div className="flex justify-between"><span className="text-sm text-[#545857]">Software</span><span className="text-sm font-semibold text-black">{asset.softwareVersion}</span></div>}
+            {asset.firmware && <div className="flex justify-between"><span className="text-sm text-[#545857]">Firmware</span><span className="text-sm font-semibold text-black">{asset.firmware}</span></div>}
           </div>
         </DetailCard>
-        <Timeline events={asset.history || []} />
+
+        {asset.maintenanceSchedule && (
+          <DetailCard title="Maintenance Schedule">
+            <div className="space-y-3">
+              <div className="flex justify-between"><span className="text-sm text-[#545857]">Frequency</span><span className="text-sm font-semibold text-black">{asset.maintenanceSchedule.frequency}</span></div>
+              <div className="flex justify-between"><span className="text-sm text-[#545857]">Last Service</span><span className="text-sm font-semibold text-black">{asset.maintenanceSchedule.lastService ? formatDate(asset.maintenanceSchedule.lastService) : 'N/A'}</span></div>
+              <div className="flex justify-between"><span className="text-sm text-[#545857]">Next Service</span><span className="text-sm font-semibold text-black">{asset.maintenanceSchedule.nextService ? formatDate(asset.maintenanceSchedule.nextService) : 'N/A'}</span></div>
+            </div>
+          </DetailCard>
+        )}
       </div>
+
+      {asset.warranty?.coverageDetails && (
+        <DetailCard title="Warranty Coverage">
+          <p className="text-sm text-black">{asset.warranty.coverageDetails}</p>
+        </DetailCard>
+      )}
+
+      {timelineEvents.length > 0 && <Timeline events={timelineEvents} />}
+
+      {asset.notes && (
+        <DetailCard title="Notes">
+          <p className="text-sm text-black">{asset.notes}</p>
+        </DetailCard>
+      )}
     </div>
   );
 }
