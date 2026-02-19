@@ -17,7 +17,7 @@ const robotoSlab = Roboto_Slab({
 export const metadata = {
   title: 'Stryker B2B Portal',
   description: 'Stryker B2B Customer Portal powered by viax',
-  icons: { icon: '/stryker-logo.png' },
+  icons: { icon: (process.env.NEXT_PUBLIC_BASE_PATH || '') + '/stryker-logo.png' },
 };
 
 export default function RootLayout({ children }) {

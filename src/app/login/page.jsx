@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/stores/auth-store';
 import { useThemeStore } from '@/stores/theme-store';
-import Image from 'next/image';
 import { Loader2 } from 'lucide-react';
 
 const TEST_ACCOUNTS = [
@@ -45,13 +44,11 @@ export default function LoginPage() {
       <div className="w-full max-w-md">
         <div className="rounded-lg border border-[#D4D4D4] bg-white p-8 shadow-lg">
           <div className="mb-8 flex justify-center">
-            <Image
-              src={logoUrl || '/stryker-logo.svg'}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}${logoUrl || '/stryker-logo.svg'}`}
               alt="Stryker"
-              width={180}
-              height={48}
               className="h-12 w-auto"
-              priority
             />
           </div>
 

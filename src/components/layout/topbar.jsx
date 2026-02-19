@@ -12,7 +12,6 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useRouter } from 'next/navigation';
-import Image from 'next/image';
 import Link from 'next/link';
 
 export function Topbar() {
@@ -33,13 +32,11 @@ export function Topbar() {
     <header className="flex h-14 items-center justify-between border-b border-[#D4D4D4] bg-white px-6">
       <div className="flex items-center gap-3">
         <Link href="/dashboard" className="flex items-center gap-2">
-          <Image
-            src={logoUrl || '/stryker-logo.svg'}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}${logoUrl || '/stryker-logo.svg'}`}
             alt={portalName || 'Stryker'}
-            width={120}
-            height={32}
             className="h-8 w-auto"
-            priority
           />
         </Link>
       </div>
