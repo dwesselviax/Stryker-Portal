@@ -125,7 +125,7 @@ export default function LoginPage() {
         </div>
 
         <p className="mt-4 text-center text-xs text-[#545857]">
-          Powered by <span className="font-semibold">viax</span> Revenue Orchestration
+          Powered by <span className="font-semibold">viax</span> Revenue Execution
         </p>
       </div>
     </div>

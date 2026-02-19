@@ -60,12 +60,14 @@ export default function ProductDetailPage({ maId }) {
                 <ShoppingCart className="h-4 w-4" /> Add to Cart
               </button>
             )}
-            <button
-              onClick={() => toast.success('Added ' + product.maName + ' to quote request')}
-              className="flex items-center gap-2 rounded-md border border-[#4C7D7A] px-6 py-3 text-sm font-bold uppercase tracking-wider text-[#4C7D7A] transition-colors hover:bg-[#F0F5F5]" style={{ fontFamily: 'var(--font-heading)' }}
-            >
-              <FileText className="h-4 w-4" /> Add to Quote
-            </button>
+            {canAddToCart && (
+              <button
+                onClick={() => toast.success('Added ' + product.maName + ' to quote request')}
+                className="flex items-center gap-2 rounded-md border border-[#4C7D7A] px-6 py-3 text-sm font-bold uppercase tracking-wider text-[#4C7D7A] transition-colors hover:bg-[#F0F5F5]" style={{ fontFamily: 'var(--font-heading)' }}
+              >
+                <FileText className="h-4 w-4" /> Add to Quote
+              </button>
+            )}
             <button
               onClick={() => toast('Issue reported for ' + product.maName)}
               className="flex items-center gap-2 rounded-md border border-[#D4D4D4] px-4 py-3 text-sm text-[#545857] transition-colors hover:bg-[#F5F5F5]"
