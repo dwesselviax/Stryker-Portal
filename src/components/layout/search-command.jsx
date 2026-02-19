@@ -81,28 +81,26 @@ export function SearchCommand() {
     <>
       <button
         onClick={() => setOpen(true)}
-        className="flex h-9 w-80 items-center gap-2 rounded-md border border-[#D4D4D4] bg-[#F5F5F5] px-3 text-sm whitespace-nowrap text-[#545857] transition-colors hover:bg-white"
+        className="flex h-9 w-64 items-center gap-2 overflow-hidden rounded-md border border-[#D4D4D4] bg-[#F5F5F5] px-3 text-sm text-[#545857] transition-colors hover:bg-white"
       >
-        <span className="flex flex-1 items-center gap-2">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="h-4 w-4"
-          >
-            <circle cx="11" cy="11" r="8" />
-            <path d="m21 21-4.3-4.3" />
-          </svg>
-          {placeholderText}
-        </span>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="h-4 w-4 shrink-0"
+        >
+          <circle cx="11" cy="11" r="8" />
+          <path d="m21 21-4.3-4.3" />
+        </svg>
+        <span className="truncate">{placeholderText}</span>
         <kbd
-          className="pointer-events-none hidden h-5 select-none items-center gap-1 rounded border border-[#D4D4D4] bg-white px-1.5 font-mono text-[10px] font-medium text-[#545857] sm:inline-flex"
+          className="pointer-events-none hidden h-5 shrink-0 select-none items-center gap-1 rounded border border-[#D4D4D4] bg-white px-1.5 font-mono text-[10px] font-medium text-[#545857] sm:inline-flex"
           style={{ fontFamily: 'var(--font-heading)' }}
         >
           <span className="text-xs">&#8984;</span>K

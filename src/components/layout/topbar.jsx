@@ -45,7 +45,7 @@ export function Topbar() {
       <div className="flex items-center gap-4">
         <SearchCommand />
 
-        <button className="relative rounded-md p-2 text-[#545857] transition-colors hover:bg-[#F5F5F5]">
+        <button className="relative shrink-0 rounded-md p-2 text-[#545857] transition-colors hover:bg-[#F5F5F5]">
           <Bell className="h-5 w-5" />
           <span className="absolute right-1 top-1 h-2 w-2 rounded-full bg-[#C62828]" />
         </button>
