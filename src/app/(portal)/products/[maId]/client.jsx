@@ -1,0 +1,78 @@
+'use client';
+
+import { useProduct } from '@/hooks/use-products';
+import { DetailCard } from '@/components/detail/detail-card';
+import { StatusBadge } from '@/components/shared/status-badge';
+import { formatCurrency } from '@/lib/utils/format';
+import { CardSkeleton } from '@/components/shared/loading-skeleton';
+import { ArrowLeft, Package, ShoppingCart, FileText, AlertTriangle } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+
+export default function ProductDetailPage({ maId }) {
+  const { data: product, isLoading } = useProduct(maId);
+  const router = useRouter();
+
+  if (isLoading) return <div className="space-y-6"><CardSkeleton /><CardSkeleton /><CardSkeleton /></div>;
+  if (!product) return <div className="py-12 text-center text-[#545857]">Product not found.</div>;
+
+  return (
+    <div className="space-y-6">
+      <button onClick={() => router.push('/products')} className="flex items-center gap-1 text-sm text-[#4C7D7A] transition-colors hover:text-black" style={{ fontFamily: 'var(--font-heading)' }}>
+        <ArrowLeft className="h-4 w-4" /> Back to Catalog
+      </button>
+
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <div className="flex items-center justify-center rounded-lg border border-[#D4D4D4] bg-[#F5F5F5] p-6 overflow-hidden">
+          {product.imageUrl ? (
+            <img src={product.imageUrl} alt={product.maName} className="max-h-72 w-full object-contain" onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }} />
+          ) : null}
+          <div className={product.imageUrl ? 'hidden' : 'flex'} style={{ alignItems: 'center', justifyContent: 'center', height: '100%', width: '100%' }}>
+            <Package className="h-32 w-32 text-[#D4D4D4]" />
+          </div>
+        </div>
+        <div className="lg:col-span-2">
+          <div className="flex items-center gap-2">
+            <span className="rounded-full bg-[#F5F5F5] px-3 py-1 text-xs font-bold uppercase tracking-wider text-[#545857]" style={{ fontFamily: 'var(--font-heading)' }}>{product.division}</span>
+            <span className="text-sm text-[#545857]">{product.maId}</span>
+          </div>
+          <h1 className="mt-2 text-3xl font-bold text-black" style={{ fontFamily: 'var(--font-heading)' }}>{product.maName}</h1>
+          <p className="mt-2 text-sm text-[#545857]">{product.category}</p>
+          <p className="mt-4 text-base text-[#333333]">{product.maDescription}</p>
+          <p className="mt-4 text-3xl font-bold text-black" style={{ fontFamily: 'var(--font-heading)' }}>{formatCurrency(product.price)}</p>
+
+          <div className="mt-4 flex flex-wrap gap-2">
+            {product.isSerialManaged && <span className="rounded-full bg-[#E3F2FD] px-3 py-1 text-xs font-bold text-[#1565C0]" style={{ fontFamily: 'var(--font-heading)' }}>Serialized</span>}
+            {product.isBatchManaged && <span className="rounded-full bg-[#FFF8E1] px-3 py-1 text-xs font-bold text-[#F9A825]" style={{ fontFamily: 'var(--font-heading)' }}>Batch Managed</span>}
+            {product.isConfigurable && <span className="rounded-full bg-[#F3E8FD] px-3 py-1 text-xs font-bold text-[#7256CF]" style={{ fontFamily: 'var(--font-heading)' }}>Configurable</span>}
+            {product.isSubscriptionEligible && <span className="rounded-full bg-[#E8F5E9] px-3 py-1 text-xs font-bold text-[#2E7D32]" style={{ fontFamily: 'var(--font-heading)' }}>Subscription Eligible</span>}
+          </div>
+
+          <div className="mt-6 flex gap-3">
+            <button className="flex items-center gap-2 rounded-md bg-[#FFB500] px-6 py-3 text-sm font-bold uppercase tracking-wider text-black transition-colors hover:bg-[#E6A300]" style={{ fontFamily: 'var(--font-heading)' }}>
+              <ShoppingCart className="h-4 w-4" /> Add to Cart
+            </button>
+            <button className="flex items-center gap-2 rounded-md border border-[#4C7D7A] px-6 py-3 text-sm font-bold uppercase tracking-wider text-[#4C7D7A] transition-colors hover:bg-[#F0F5F5]" style={{ fontFamily: 'var(--font-heading)' }}>
+              <FileText className="h-4 w-4" /> Add to Quote
+            </button>
+            <button className="flex items-center gap-2 rounded-md border border-[#D4D4D4] px-4 py-3 text-sm text-[#545857] transition-colors hover:bg-[#F5F5F5]">
+              <AlertTriangle className="h-4 w-4" /> Report Issue
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {product.specifications && (
+        <DetailCard title="Specifications">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            {Object.entries(product.specifications).map(([key, value]) => (
+              <div key={key} className="flex justify-between border-b border-[#F5F5F5] py-2">
+                <span className="text-sm text-[#545857]">{key}</span>
+                <span className="text-sm font-semibold text-black">{value}</span>
+              </div>
+            ))}
+          </div>
+        </DetailCard>
+      )}
+    </div>
+  );
+}
