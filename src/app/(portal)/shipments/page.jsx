@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { DataTable } from '@/components/data/data-table';
 import { FiltersBar, FilterSelect } from '@/components/data/filters-bar';
 import { StatusBadge } from '@/components/shared/status-badge';
@@ -31,6 +32,7 @@ export default function ShipmentsPage() {
   const [statusFilter, setStatusFilter] = useState(null);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     import('@/lib/mock-data/shipments').then((mod) => {
@@ -56,7 +58,7 @@ export default function ShipmentsPage() {
         <FilterSelect label="All Statuses" value={statusFilter} onChange={setStatusFilter} options={STATUS_OPTIONS} />
       </FiltersBar>
 
-      {loading ? <TableSkeleton rows={8} columns={6} /> : <DataTable columns={COLUMNS} data={data} />}
+      {loading ? <TableSkeleton rows={8} columns={6} /> : <DataTable columns={COLUMNS} data={data} onRowClick={(row) => router.push('/shipments/' + row.id)} />}
     </div>
   );
 }

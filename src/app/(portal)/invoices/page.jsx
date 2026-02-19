@@ -22,7 +22,7 @@ const COLUMNS = [
   { key: 'orderId', label: 'Order Ref', sortable: true },
   { key: 'status', label: 'Status', sortable: true, render: (val) => <StatusBadge status={val} /> },
   { key: 'dueDate', label: 'Due Date', sortable: true, render: (val) => formatDate(val) },
-  { key: 'total', label: 'Amount', sortable: true, render: (_, row) => formatCurrency(row.pricing?.total) },
+  { key: 'totalAmount', label: 'Amount', sortable: true, render: (val) => formatCurrency(val) },
 ];
 
 export default function InvoicesPage() {

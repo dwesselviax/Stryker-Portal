@@ -3,12 +3,14 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useProducts } from '@/hooks/use-products';
+import { useAuthStore } from '@/stores/auth-store';
 import { FiltersBar, FilterSelect } from '@/components/data/filters-bar';
 import { StatusBadge } from '@/components/shared/status-badge';
 import { formatCurrency } from '@/lib/utils/format';
 import { CardSkeleton } from '@/components/shared/loading-skeleton';
 import { Grid3X3, List, Package, ShoppingCart } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { toast } from 'sonner';
 import Link from 'next/link';
 
 const DIVISION_OPTIONS = [
@@ -30,6 +32,8 @@ export default function ProductsPage() {
   const [division, setDivision] = useState(null);
   const [viewMode, setViewMode] = useState('grid');
   const { data: products, isLoading } = useProducts({ search, division });
+  const user = useAuthStore((s) => s.user);
+  const canAddToCart = user?.role !== 'medical_professional';
 
   return (
     <div>
@@ -77,9 +81,14 @@ export default function ProductsPage() {
                 <p className="mt-1 line-clamp-2 text-xs text-[#545857]">{product.maDescription}</p>
                 <div className="mt-3 flex items-center justify-between">
                   <span className="text-lg font-bold text-black" style={{ fontFamily: 'var(--font-heading)' }}>{formatCurrency(product.price)}</span>
-                  <button className="rounded-md bg-[#4C7D7A] p-2 text-white transition-colors hover:bg-[#3D6664]">
-                    <ShoppingCart className="h-4 w-4" />
-                  </button>
+                  {canAddToCart && (
+                    <button
+                      className="rounded-md bg-[#4C7D7A] p-2 text-white transition-colors hover:bg-[#3D6664]"
+                      onClick={(e) => { e.preventDefault(); toast.success('Added ' + product.maName + ' to cart'); }}
+                    >
+                      <ShoppingCart className="h-4 w-4" />
+                    </button>
+                  )}
                 </div>
               </div>
             </Link>

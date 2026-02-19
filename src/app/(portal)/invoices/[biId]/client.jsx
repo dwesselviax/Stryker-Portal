@@ -48,10 +48,16 @@ export default function InvoiceDetailPage({ biId }) {
       </div>
 
       <DetailCard title="Line Items">
-        <LineItems items={invoice.items || []} />
+        <LineItems items={invoice.lineItems || []} />
       </DetailCard>
 
-      <PriceSummary pricing={invoice.pricing} />
+      <PriceSummary pricing={{
+        subtotal: invoice.subtotal,
+        discount: invoice.discount,
+        tax: invoice.tax,
+        freight: invoice.freight,
+        total: invoice.totalAmount,
+      }} />
     </div>
   );
 }

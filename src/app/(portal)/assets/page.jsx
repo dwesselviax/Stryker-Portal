@@ -19,7 +19,10 @@ const COLUMNS = [
   { key: 'id', label: 'Asset ID', sortable: true },
   { key: 'productName', label: 'Device', sortable: true },
   { key: 'serialNumber', label: 'Serial #', sortable: true },
-  { key: 'location', label: 'Location', sortable: true },
+  { key: 'location', label: 'Location', sortable: true, render: (val) => {
+    if (!val || typeof val !== 'object') return val || '—';
+    return [val.facility, val.department, val.room].filter(Boolean).join(', ');
+  }},
   { key: 'installDate', label: 'Install Date', sortable: true, render: (val) => formatDate(val) },
   { key: 'warrantyStatus', label: 'Warranty', sortable: true, render: (val) => <StatusBadge status={val} /> },
   { key: 'status', label: 'Status', sortable: true, render: (val) => <StatusBadge status={val} /> },

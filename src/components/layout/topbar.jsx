@@ -2,7 +2,8 @@
 
 import { useAuthStore } from '@/stores/auth-store';
 import { useThemeStore } from '@/stores/theme-store';
-import { Bell, Search, LogOut, User, Settings, ChevronDown } from 'lucide-react';
+import { Bell, LogOut, User, ChevronDown } from 'lucide-react';
+import { SearchCommand } from '@/components/layout/search-command';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
   DropdownMenu,
@@ -42,10 +43,7 @@ export function Topbar() {
       </div>
 
       <div className="flex items-center gap-4">
-        <button className="flex h-9 w-64 items-center gap-2 rounded-md border border-[#D4D4D4] bg-[#F5F5F5] px-3 text-sm text-[#545857] transition-colors hover:bg-white">
-          <Search className="h-4 w-4" />
-          <span>Search products, orders...</span>
-        </button>
+        <SearchCommand />
 
         <button className="relative rounded-md p-2 text-[#545857] transition-colors hover:bg-[#F5F5F5]">
           <Bell className="h-5 w-5" />
@@ -70,9 +68,6 @@ export function Topbar() {
           <DropdownMenuContent align="end" className="w-56">
             <DropdownMenuItem onClick={() => router.push('/account')}>
               <User className="mr-2 h-4 w-4" /> My Account
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => router.push('/admin/theme')}>
-              <Settings className="mr-2 h-4 w-4" /> Settings
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={handleLogout} className="text-[#C62828]">

@@ -38,7 +38,7 @@ export default function SubscriptionDetailPage({ biId }) {
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <DetailCard title="Subscription Details">
           <div className="space-y-3">
-            <div className="flex justify-between"><span className="text-sm text-[#545857]">Product</span><span className="text-sm font-semibold text-black">{sub.productName || sub.biName}</span></div>
+            <div className="flex justify-between"><span className="text-sm text-[#545857]">Product</span><span className="text-sm font-semibold text-black">{sub.product?.name || sub.productName || sub.biName}</span></div>
             <div className="flex justify-between"><span className="text-sm text-[#545857]">Frequency</span><span className="text-sm font-semibold text-black">{sub.frequency}</span></div>
             <div className="flex justify-between"><span className="text-sm text-[#545857]">Quantity</span><span className="text-sm font-semibold text-black">{sub.quantity}</span></div>
             <div className="flex justify-between"><span className="text-sm text-[#545857]">Start Date</span><span className="text-sm font-semibold text-black">{formatDate(sub.startDate)}</span></div>
@@ -47,7 +47,17 @@ export default function SubscriptionDetailPage({ biId }) {
         </DetailCard>
 
         <DetailCard title="Delivery Address">
-          <p className="text-sm text-black">{sub.deliveryAddress || '100 Memorial Drive, Chicago, IL 60601'}</p>
+          {sub.deliveryAddress && typeof sub.deliveryAddress === 'object' ? (
+            <div className="text-sm text-black space-y-0.5">
+              {sub.deliveryAddress.name && <p className="font-semibold">{sub.deliveryAddress.name}</p>}
+              {sub.deliveryAddress.street && <p>{sub.deliveryAddress.street}</p>}
+              {sub.deliveryAddress.building && <p>{sub.deliveryAddress.building}</p>}
+              <p>{[sub.deliveryAddress.city, sub.deliveryAddress.state].filter(Boolean).join(', ')}{sub.deliveryAddress.zip ? ` ${sub.deliveryAddress.zip}` : ''}</p>
+              {sub.deliveryAddress.country && sub.deliveryAddress.country !== 'US' && <p>{sub.deliveryAddress.country}</p>}
+            </div>
+          ) : (
+            <p className="text-sm text-black">{sub.deliveryAddress || '100 Memorial Drive, Chicago, IL 60601'}</p>
+          )}
         </DetailCard>
       </div>
     </div>

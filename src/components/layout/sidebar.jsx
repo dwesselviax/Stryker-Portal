@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 import { useAuthStore } from '@/stores/auth-store';
 import {
   LayoutDashboard, ShoppingCart, FileText, MessageSquareQuote, RefreshCw,
-  Package, Truck, Receipt, UserCircle, Settings, HelpCircle, ChevronLeft,
+  Package, Truck, Receipt, UserCircle, HelpCircle, ChevronLeft,
   ChevronRight, Warehouse, HardDrive, Wrench, Recycle, BookOpen,
   GraduationCap, AlertTriangle, ClipboardList,
 } from 'lucide-react';
@@ -33,7 +33,6 @@ const NAV_ITEMS = [
   { type: 'divider', label: 'Account', roles: ['all'] },
   { href: '/account', label: 'My Account', icon: UserCircle, roles: ['all'] },
   { href: '/support', label: 'Support', icon: HelpCircle, roles: ['all'] },
-  { href: '/admin/theme', label: 'Admin', icon: Settings, roles: ['sales_rep', 'hospital_group', 'distributor'] },
 ];
 
 export function Sidebar() {

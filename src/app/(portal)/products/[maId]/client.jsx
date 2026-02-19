@@ -1,16 +1,20 @@
 'use client';
 
 import { useProduct } from '@/hooks/use-products';
+import { useAuthStore } from '@/stores/auth-store';
 import { DetailCard } from '@/components/detail/detail-card';
 import { StatusBadge } from '@/components/shared/status-badge';
 import { formatCurrency } from '@/lib/utils/format';
 import { CardSkeleton } from '@/components/shared/loading-skeleton';
 import { ArrowLeft, Package, ShoppingCart, FileText, AlertTriangle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 
 export default function ProductDetailPage({ maId }) {
   const { data: product, isLoading } = useProduct(maId);
   const router = useRouter();
+  const user = useAuthStore((s) => s.user);
+  const canAddToCart = user?.role !== 'medical_professional';
 
   if (isLoading) return <div className="space-y-6"><CardSkeleton /><CardSkeleton /><CardSkeleton /></div>;
   if (!product) return <div className="py-12 text-center text-[#545857]">Product not found.</div>;
@@ -48,13 +52,24 @@ export default function ProductDetailPage({ maId }) {
           </div>
 
           <div className="mt-6 flex gap-3">
-            <button className="flex items-center gap-2 rounded-md bg-[#FFB500] px-6 py-3 text-sm font-bold uppercase tracking-wider text-black transition-colors hover:bg-[#E6A300]" style={{ fontFamily: 'var(--font-heading)' }}>
-              <ShoppingCart className="h-4 w-4" /> Add to Cart
-            </button>
-            <button className="flex items-center gap-2 rounded-md border border-[#4C7D7A] px-6 py-3 text-sm font-bold uppercase tracking-wider text-[#4C7D7A] transition-colors hover:bg-[#F0F5F5]" style={{ fontFamily: 'var(--font-heading)' }}>
+            {canAddToCart && (
+              <button
+                onClick={() => toast.success('Added ' + product.maName + ' to cart')}
+                className="flex items-center gap-2 rounded-md bg-[#FFB500] px-6 py-3 text-sm font-bold uppercase tracking-wider text-black transition-colors hover:bg-[#E6A300]" style={{ fontFamily: 'var(--font-heading)' }}
+              >
+                <ShoppingCart className="h-4 w-4" /> Add to Cart
+              </button>
+            )}
+            <button
+              onClick={() => toast.success('Added ' + product.maName + ' to quote request')}
+              className="flex items-center gap-2 rounded-md border border-[#4C7D7A] px-6 py-3 text-sm font-bold uppercase tracking-wider text-[#4C7D7A] transition-colors hover:bg-[#F0F5F5]" style={{ fontFamily: 'var(--font-heading)' }}
+            >
               <FileText className="h-4 w-4" /> Add to Quote
             </button>
-            <button className="flex items-center gap-2 rounded-md border border-[#D4D4D4] px-4 py-3 text-sm text-[#545857] transition-colors hover:bg-[#F5F5F5]">
+            <button
+              onClick={() => toast('Issue reported for ' + product.maName)}
+              className="flex items-center gap-2 rounded-md border border-[#D4D4D4] px-4 py-3 text-sm text-[#545857] transition-colors hover:bg-[#F5F5F5]"
+            >
               <AlertTriangle className="h-4 w-4" /> Report Issue
             </button>
           </div>

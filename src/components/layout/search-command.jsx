@@ -1,0 +1,217 @@
+'use client';
+
+import { useEffect, useState, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
+import {
+  CommandDialog,
+  CommandInput,
+  CommandList,
+  CommandEmpty,
+  CommandGroup,
+  CommandItem,
+  CommandSeparator,
+} from '@/components/ui/command';
+import {
+  ShoppingCart,
+  FileText,
+  Receipt,
+  Package,
+  ArrowRight,
+} from 'lucide-react';
+import { orders } from '@/lib/mock-data/orders';
+import { quotes } from '@/lib/mock-data/quotes';
+import { invoices } from '@/lib/mock-data/invoices';
+import { products } from '@/lib/mock-data/products';
+
+const MAX_RESULTS_PER_GROUP = 5;
+
+export function SearchCommand() {
+  const [open, setOpen] = useState(false);
+  const router = useRouter();
+
+  // Keyboard shortcut: Cmd+K or Ctrl+K
+  useEffect(() => {
+    const down = (e) => {
+      if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault();
+        setOpen((prev) => !prev);
+      }
+    };
+    document.addEventListener('keydown', down);
+    return () => document.removeEventListener('keydown', down);
+  }, []);
+
+  const handleSelect = useCallback(
+    (path) => {
+      setOpen(false);
+      router.push(path);
+    },
+    [router]
+  );
+
+  return (
+    <>
+      <button
+        onClick={() => setOpen(true)}
+        className="flex h-9 w-64 items-center gap-2 rounded-md border border-[#D4D4D4] bg-[#F5F5F5] px-3 text-sm text-[#545857] transition-colors hover:bg-white"
+      >
+        <span className="flex flex-1 items-center gap-2">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="h-4 w-4"
+          >
+            <circle cx="11" cy="11" r="8" />
+            <path d="m21 21-4.3-4.3" />
+          </svg>
+          Search products, orders...
+        </span>
+        <kbd
+          className="pointer-events-none hidden h-5 select-none items-center gap-1 rounded border border-[#D4D4D4] bg-white px-1.5 font-mono text-[10px] font-medium text-[#545857] sm:inline-flex"
+          style={{ fontFamily: 'var(--font-heading)' }}
+        >
+          <span className="text-xs">&#8984;</span>K
+        </kbd>
+      </button>
+
+      <CommandDialog
+        open={open}
+        onOpenChange={setOpen}
+        title="Global Search"
+        description="Search across orders, quotes, invoices, and products"
+        showCloseButton={false}
+      >
+        <CommandInput placeholder="Search orders, quotes, invoices, products..." />
+        <CommandList className="max-h-[400px]">
+          <CommandEmpty>No results found.</CommandEmpty>
+
+          {/* Orders */}
+          <CommandGroup heading="Orders">
+            {orders.slice(0, MAX_RESULTS_PER_GROUP).map((order) => (
+              <CommandItem
+                key={order.biId}
+                value={`order ${order.biId} ${order.biName}`}
+                onSelect={() => handleSelect(`/orders/${order.biId}`)}
+                className="cursor-pointer"
+              >
+                <ShoppingCart className="mr-2 h-4 w-4 text-[#4C7D7A]" />
+                <div className="flex flex-1 flex-col">
+                  <span
+                    className="text-sm font-medium text-black"
+                    style={{ fontFamily: 'var(--font-heading)' }}
+                  >
+                    {order.biId}
+                  </span>
+                  <span className="text-xs text-[#545857]">
+                    {order.biName}
+                  </span>
+                </div>
+                <span className="ml-auto flex items-center gap-1 text-xs text-[#545857]">
+                  {order.status}
+                  <ArrowRight className="h-3 w-3" />
+                </span>
+              </CommandItem>
+            ))}
+          </CommandGroup>
+
+          <CommandSeparator />
+
+          {/* Quotes */}
+          <CommandGroup heading="Quotes">
+            {quotes.slice(0, MAX_RESULTS_PER_GROUP).map((quote) => (
+              <CommandItem
+                key={quote.biId}
+                value={`quote ${quote.biId} ${quote.biName}`}
+                onSelect={() => handleSelect(`/quotes/${quote.biId}`)}
+                className="cursor-pointer"
+              >
+                <FileText className="mr-2 h-4 w-4 text-[#4C7D7A]" />
+                <div className="flex flex-1 flex-col">
+                  <span
+                    className="text-sm font-medium text-black"
+                    style={{ fontFamily: 'var(--font-heading)' }}
+                  >
+                    {quote.biId}
+                  </span>
+                  <span className="text-xs text-[#545857]">
+                    {quote.biName}
+                  </span>
+                </div>
+                <span className="ml-auto flex items-center gap-1 text-xs text-[#545857]">
+                  {quote.status}
+                  <ArrowRight className="h-3 w-3" />
+                </span>
+              </CommandItem>
+            ))}
+          </CommandGroup>
+
+          <CommandSeparator />
+
+          {/* Invoices */}
+          <CommandGroup heading="Invoices">
+            {invoices.slice(0, MAX_RESULTS_PER_GROUP).map((invoice) => (
+              <CommandItem
+                key={invoice.biId}
+                value={`invoice ${invoice.biId} ${invoice.invoiceNumber}`}
+                onSelect={() => handleSelect(`/invoices/${invoice.biId}`)}
+                className="cursor-pointer"
+              >
+                <Receipt className="mr-2 h-4 w-4 text-[#4C7D7A]" />
+                <div className="flex flex-1 flex-col">
+                  <span
+                    className="text-sm font-medium text-black"
+                    style={{ fontFamily: 'var(--font-heading)' }}
+                  >
+                    {invoice.biId}
+                  </span>
+                  <span className="text-xs text-[#545857]">
+                    {invoice.invoiceNumber}
+                  </span>
+                </div>
+                <span className="ml-auto flex items-center gap-1 text-xs text-[#545857]">
+                  {invoice.status}
+                  <ArrowRight className="h-3 w-3" />
+                </span>
+              </CommandItem>
+            ))}
+          </CommandGroup>
+
+          <CommandSeparator />
+
+          {/* Products */}
+          <CommandGroup heading="Products">
+            {products.slice(0, MAX_RESULTS_PER_GROUP).map((product) => (
+              <CommandItem
+                key={product.maId}
+                value={`product ${product.maId} ${product.maName}`}
+                onSelect={() => handleSelect(`/products/${product.maId}`)}
+                className="cursor-pointer"
+              >
+                <Package className="mr-2 h-4 w-4 text-[#4C7D7A]" />
+                <div className="flex flex-1 flex-col">
+                  <span
+                    className="text-sm font-medium text-black"
+                    style={{ fontFamily: 'var(--font-heading)' }}
+                  >
+                    {product.maName}
+                  </span>
+                  <span className="text-xs text-[#545857]">
+                    {product.maId} &middot; {product.division}
+                  </span>
+                </div>
+                <ArrowRight className="ml-auto h-3 w-3 text-[#545857]" />
+              </CommandItem>
+            ))}
+          </CommandGroup>
+        </CommandList>
+      </CommandDialog>
+    </>
+  );
+}

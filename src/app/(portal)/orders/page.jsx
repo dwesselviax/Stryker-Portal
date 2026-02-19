@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useQueryClient } from '@tanstack/react-query';
 import { useOrders } from '@/hooks/use-orders';
 import { DataTable } from '@/components/data/data-table';
 import { FiltersBar, FilterSelect } from '@/components/data/filters-bar';
@@ -9,6 +10,7 @@ import { StatusBadge } from '@/components/shared/status-badge';
 import { formatCurrency, formatDate } from '@/lib/utils/format';
 import { TableSkeleton } from '@/components/shared/loading-skeleton';
 import { Plus } from 'lucide-react';
+import { OrderForm } from '@/components/forms/order-form';
 
 const STATUS_OPTIONS = [
   { value: 'Draft', label: 'Draft' },
@@ -32,8 +34,20 @@ const COLUMNS = [
 export default function OrdersPage() {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState(null);
+  const [formOpen, setFormOpen] = useState(false);
+  const [localOrders, setLocalOrders] = useState([]);
   const { data: orders, isLoading } = useOrders({ search, status: statusFilter });
+  const queryClient = useQueryClient();
   const router = useRouter();
+
+  function handleOrderCreated(newOrder) {
+    setLocalOrders((prev) => [newOrder, ...prev]);
+    // Also invalidate the query so a re-fetch would include the new order if backed by a real API
+    queryClient.invalidateQueries({ queryKey: ['orders'] });
+  }
+
+  // Merge server-fetched orders with locally-created ones
+  const allOrders = [...localOrders, ...(orders || [])];
 
   return (
     <div>
@@ -43,6 +57,7 @@ export default function OrdersPage() {
           <p className="mt-1 text-sm text-[#545857]">Manage and track your orders</p>
         </div>
         <button
+          onClick={() => setFormOpen(true)}
           className="flex items-center gap-2 rounded-md bg-[#4C7D7A] px-4 py-2.5 text-sm font-bold uppercase tracking-wider text-white transition-colors hover:bg-[#3D6664]"
           style={{ fontFamily: 'var(--font-heading)', letterSpacing: '0.5px' }}
         >
@@ -59,10 +74,16 @@ export default function OrdersPage() {
       ) : (
         <DataTable
           columns={COLUMNS}
-          data={orders || []}
+          data={allOrders}
           onRowClick={(row) => router.push('/orders/' + row.biId)}
         />
       )}
+
+      <OrderForm
+        open={formOpen}
+        onOpenChange={setFormOpen}
+        onOrderCreated={handleOrderCreated}
+      />
     </div>
   );
 }
