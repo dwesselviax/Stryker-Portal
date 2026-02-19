@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useProducts } from '@/hooks/use-products';
 import { useAuthStore } from '@/stores/auth-store';
 import { FiltersBar, FilterSelect } from '@/components/data/filters-bar';
@@ -28,7 +28,8 @@ const DIVISION_OPTIONS = [
 ];
 
 export default function ProductsPage() {
-  const [search, setSearch] = useState('');
+  const searchParams = useSearchParams();
+  const [search, setSearch] = useState(searchParams.get('search') || '');
   const [division, setDivision] = useState(null);
   const [viewMode, setViewMode] = useState('grid');
   const { data: products, isLoading } = useProducts({ search, division });
