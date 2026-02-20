@@ -9,7 +9,7 @@ import {
   LayoutDashboard, ShoppingCart, FileText, MessageSquareQuote, RefreshCw,
   Package, Truck, Receipt, UserCircle, HelpCircle, ChevronLeft,
   ChevronRight, Warehouse, HardDrive, Wrench, Recycle, BookOpen,
-  GraduationCap, AlertTriangle, ClipboardList,
+  GraduationCap, AlertTriangle, ClipboardList, FileSpreadsheet,
 } from 'lucide-react';
 
 const NAV_ITEMS = [
@@ -21,6 +21,7 @@ const NAV_ITEMS = [
   { href: '/subscriptions', label: 'Subscriptions', icon: RefreshCw, roles: ['sales_rep', 'hospital_group'] },
   { type: 'divider', label: 'Catalog', roles: ['all'] },
   { href: '/products', label: 'Products', icon: Package, roles: ['all'] },
+  { href: '/products/price-list', label: 'Price List', icon: FileSpreadsheet, roles: ['distributor', 'sales_rep', 'hospital_group'] },
   { type: 'divider', label: 'Inventory & Assets', roles: ['sales_rep', 'hospital_group'] },
   { href: '/consignment', label: 'Consignment', icon: Warehouse, roles: ['sales_rep', 'hospital_group'] },
   { href: '/assets', label: 'Assets & Devices', icon: HardDrive, roles: ['sales_rep', 'hospital_group'] },
